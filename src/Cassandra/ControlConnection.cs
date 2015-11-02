@@ -57,10 +57,7 @@ namespace Cassandra
             set { _host = value; }
         }
 
-        /// <summary>
-        /// The address of the endpoint used by the ControlConnection
-        /// </summary>
-        internal IPEndPoint BindAddress
+        public IPEndPoint Address
         {
             get
             {
@@ -540,6 +537,11 @@ namespace Cassandra
     internal interface IMetadataQueryProvider
     {
         byte ProtocolVersion { get; }
+
+        /// <summary>
+        /// The address of the endpoint used by the ControlConnection
+        /// </summary>
+        IPEndPoint Address { get; }
 
         Task<IEnumerable<Row>> QueryAsync(string cqlQuery, bool retry = false);
 

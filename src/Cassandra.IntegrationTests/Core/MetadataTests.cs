@@ -104,17 +104,17 @@ namespace Cassandra.IntegrationTests.Core
             ITestCluster testCluster = TestClusterManager.GetNonShareableTestCluster(2);
             var cluster = testCluster.Cluster;
             //The control connection is connected to host 1
-            Assert.AreEqual(1, TestHelper.GetLastAddressByte(cluster.Metadata.ControlConnection.BindAddress));
+            Assert.AreEqual(1, TestHelper.GetLastAddressByte(cluster.Metadata.ControlConnection.Address));
             testCluster.StopForce(1);
             Thread.Sleep(10000);
 
             //The control connection is still connected to host 1
-            Assert.AreEqual(1, TestHelper.GetLastAddressByte(cluster.Metadata.ControlConnection.BindAddress));
+            Assert.AreEqual(1, TestHelper.GetLastAddressByte(cluster.Metadata.ControlConnection.Address));
             var t = cluster.Metadata.GetTable("system", "local");
             Assert.NotNull(t);
 
             //The control connection should be connected to host 2
-            Assert.AreEqual(2, TestHelper.GetLastAddressByte(cluster.Metadata.ControlConnection.BindAddress));
+            Assert.AreEqual(2, TestHelper.GetLastAddressByte(cluster.Metadata.ControlConnection.Address));
         }
 
         [Test]
@@ -177,7 +177,7 @@ namespace Cassandra.IntegrationTests.Core
                 }
             };
             //The host not used by the control connection
-            int hostToKill = TestHelper.GetLastAddressByte(cluster.Metadata.ControlConnection.BindAddress);
+            int hostToKill = TestHelper.GetLastAddressByte(cluster.Metadata.ControlConnection.Address);
             if (!useControlConnectionHost)
             {
                 hostToKill = hostToKill == 1 ? 2 : 1;
@@ -667,8 +667,8 @@ namespace Cassandra.IntegrationTests.Core
 
             session.Execute(String.Format("CREATE TABLE {0} (" +
                                           "id uuid primary key, " +
-                                          "map1 map<text, frozen<list<text>>>," +
-                                          "map2 map<int, frozen<map<text, bigint>>>," +
+                                          "map1 map<text, frozen<list<varchar>>>," +
+                                          "map2 map<int, frozen<map<varchar, bigint>>>," +
                                           "list1 list<frozen<map<uuid, int>>>)", tableName));
             var table = cluster.Metadata
                                .GetKeyspace(keyspaceName)
