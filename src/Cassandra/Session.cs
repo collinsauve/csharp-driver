@@ -107,6 +107,17 @@ namespace Cassandra
         }
 
         /// <inheritdoc />
+        public Task ChangeKeyspaceAsync(string keyspace)
+        {
+            if (Keyspace != keyspace)
+            {
+                var task = ExecuteAsync(new SimpleStatement(CqlQueryTools.GetUseKeyspaceCql(keyspace)));
+                return task.Continue(rs => Keyspace = keyspace);
+            }
+            return TaskHelper.Completed;
+        }
+
+        /// <inheritdoc />
         public void CreateKeyspace(string keyspace, Dictionary<string, string> replication = null, bool durableWrites = true)
         {
             WaitForSchemaAgreement(Execute(CqlQueryTools.GetCreateKeyspaceCql(keyspace, replication, durableWrites, false)));
