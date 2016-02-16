@@ -1,16 +1,25 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
     <metadata>
-        <id>CassandraCSharpDriver</id>
+        <id>CassandraCSharpDriver-collinsauve</id>
         <!-- It will be overridden by the nuget command if -version is specified -->
         <version>0.0.0</version>
-        <title>DataStax C# Driver for Apache Cassandra</title>
-        <authors>DataStax</authors>
+        <title>Fork of DataStax C# Driver for Apache Cassandra</title>
+        <authors>DataStax, Collin Sauve</authors>
         <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
-        <projectUrl>https://github.com/datastax/csharp-driver</projectUrl>
+        <projectUrl>https://github.com/collinsauve/csharp-driver</projectUrl>
         <requireLicenseAcceptance>true</requireLicenseAcceptance>
-        <summary>A modern, feature-rich and highly tunable C# client library for Apache Cassandra</summary>
+        <summary>Fork of DataStax C# Driver for Apache Cassandra</summary>
         <description>
+          Fork of DataStax client.  Includes the following PRs:
+          
+          
+          * https://github.com/datastax/csharp-driver/pull/192 "add optional ttl parameter to Insert functions on ICqlWriteClient and ICqlWriteAsyncClient (fixes CSHARP-395)"
+          
+          * https://github.com/datastax/csharp-driver/pull/161 "add ExecuteAsync and ChangeKeyspaceAsync"
+          
+          * https://github.com/datastax/csharp-driver/pull/193 "Create keyspace async"
+        
           A modern, feature-rich and highly tunable C# client library for Apache Cassandra (1.2+) and DataStax Enterprise (3.1+) using exclusively Cassandra&#39;s binary protocol and Cassandra Query Language v3.
           Features: Sync and Async API; Simple, Prepared and Batch statements; Asynchronous IO, parallel execution, request pipelining; Connection pooling; Auto node discovery.
           Works with any Cassandra cluster size.
