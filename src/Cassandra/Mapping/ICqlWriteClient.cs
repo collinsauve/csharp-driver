@@ -8,7 +8,7 @@
         /// <summary>
         /// Inserts the specified POCO in Cassandra.
         /// </summary>
-        void Insert<T>(T poco, CqlQueryOptions queryOptions = null);
+        void Insert<T>(T poco, CqlQueryOptions queryOptions = null, int? ttl = null);
 
         /// <summary>
         /// Inserts the specified POCO in Cassandra.
@@ -27,8 +27,9 @@
         /// </para>
         /// </param>
         /// <param name="queryOptions">Optional query options</param>
+        /// <param name="ttl">Optional ttl</param>
         /// <returns></returns>
-        void Insert<T>(T poco, bool insertNulls, CqlQueryOptions queryOptions = null);
+        void Insert<T>(T poco, bool insertNulls, CqlQueryOptions queryOptions = null, int? ttl = null);
 
         /// <summary>
         /// Updates the POCO specified in Cassandra.
