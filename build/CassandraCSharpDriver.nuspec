@@ -14,11 +14,9 @@
           Fork of DataStax client.  Includes the following PRs:
           
           
-          * https://github.com/datastax/csharp-driver/pull/192 "add optional ttl parameter to Insert functions on ICqlWriteClient and ICqlWriteAsyncClient (fixes CSHARP-395)"
+          * "allow setting the BatchType for IMapper.CreateBatch - fixes CSHARP-410" https://github.com/datastax/csharp-driver/pull/195
           
-          * https://github.com/datastax/csharp-driver/pull/161 "add ExecuteAsync and ChangeKeyspaceAsync"
-          
-          * https://github.com/datastax/csharp-driver/pull/193 "Create keyspace async"
+          * "add overloads with ttl parameter to Insert functions on ICqlWriteClient and ICqlWriteAsyncClient (fixes CSHARP-395)" https://github.com/datastax/csharp-driver/pull/192
         
           A modern, feature-rich and highly tunable C# client library for Apache Cassandra (1.2+) and DataStax Enterprise (3.1+) using exclusively Cassandra&#39;s binary protocol and Cassandra Query Language v3.
           Features: Sync and Async API; Simple, Prepared and Batch statements; Asynchronous IO, parallel execution, request pipelining; Connection pooling; Auto node discovery.
