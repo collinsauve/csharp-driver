@@ -111,8 +111,7 @@ namespace Cassandra
         {
             if (Keyspace != keyspace)
             {
-                var task = ExecuteAsync(new SimpleStatement(CqlQueryTools.GetUseKeyspaceCql(keyspace)));
-                return task.Continue(rs => Keyspace = keyspace);
+                return ExecuteAsync(new SimpleStatement(CqlQueryTools.GetUseKeyspaceCql(keyspace)));
             }
             return TaskHelper.Completed;
         }
