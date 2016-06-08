@@ -66,6 +66,13 @@ namespace Cassandra.IntegrationTests.Linq.LinqMethods
             Assert.AreEqual(1, count);
         }
 
+        [Test]
+        public void LinqCount_Take_Async()
+        {
+            var table = new Table<AllDataTypesEntity>(_session, new MappingConfiguration());
+            long count = table.Take(3).Count().ExecuteAsync().Result;
+            Assert.AreEqual(3, count);
+        }
 
     }
 }
