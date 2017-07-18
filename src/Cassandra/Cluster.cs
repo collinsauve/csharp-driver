@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 using Cassandra.Collections;
 using Cassandra.Serialization;
 using Cassandra.Tasks;
+using NeoSmart.AsyncLock;
 
 namespace Cassandra
 {
@@ -39,7 +40,7 @@ namespace Cassandra
         private readonly ControlConnection _controlConnection;
         private volatile bool _initialized;
         private volatile Exception _initException;
-        private readonly object _initLock = new object();
+        private readonly AsyncLock _initLock = new AsyncLock();
         private readonly Metadata _metadata;
         private readonly Serializer _serializer;
 
@@ -119,7 +120,7 @@ namespace Cassandra
         {
             get
             {
-                Init();
+                TaskHelper.WaitToComplete(Init());
                 return _metadata;
             }
         }
@@ -146,14 +147,15 @@ namespace Cassandra
         /// <summary>
         /// Initializes once (Thread-safe) the control connection and metadata associated with the Cluster instance
         /// </summary>
-        private void Init()
+        private async Task Init()
         {
             if (_initialized)
             {
                 //It was already initialized
                 return;
             }
-            lock (_initLock)
+            var @lock = await _initLock.LockAsync();
+            try
             {
                 if (_initialized)
                 {
@@ -171,7 +173,9 @@ namespace Cassandra
                     var initialAbortTimeout = Configuration.SocketOptions.ConnectTimeoutMillis * 2 *
                                               _metadata.Hosts.Count;
                     initialAbortTimeout = Math.Max(initialAbortTimeout, ControlConnection.MetadataAbortTimeout);
-                    TaskHelper.WaitToComplete(_controlConnection.Init(), initialAbortTimeout);
+                    // TODO: Add timeout back 
+                    await _controlConnection.Init();
+
                     // Initialize policies
                     Configuration.Policies.LoadBalancingPolicy.Initialize(this);
                     Configuration.Policies.SpeculativeExecutionPolicy.Initialize(this);
@@ -203,6 +207,10 @@ namespace Cassandra
                 _metadata.Hosts.Added += OnHostAdded;
                 _metadata.Hosts.Removed += OnHostRemoved;
             }
+            finally
+            {
+                @lock.Dispose();
+            }
         }
 
         /// <inheritdoc />
@@ -221,14 +229,31 @@ namespace Cassandra
         }
 
         /// <summary>
+        /// Creates a new session on this cluster.
+        /// </summary>
+        public Task<ISession> ConnectAsync()
+        {
+            return ConnectAsync(Configuration.ClientOptions.DefaultKeyspace);
+        }
+
+        /// <summary>
         /// Creates a new session on this cluster and using a keyspace an existing keyspace.
         /// </summary>
         /// <param name="keyspace">Case-sensitive keyspace name to use</param>
         public ISession Connect(string keyspace)
         {
-            Init();
+            return TaskHelper.WaitToComplete(ConnectAsync(keyspace));
+        }
+
+        /// <summary>
+        /// Creates a new session on this cluster and using a keyspace an existing keyspace.
+        /// </summary>
+        /// <param name="keyspace">Case-sensitive keyspace name to use</param>
+        public async Task<ISession> ConnectAsync(string keyspace)
+        {
+            await Init();
             var session = new Session(this, Configuration, keyspace, _serializer);
-            session.Init();
+            await session.Init();
             _connectedSessions.Add(session);
             _logger.Info("Session connected ({0})", session.GetHashCode());
             return session;
