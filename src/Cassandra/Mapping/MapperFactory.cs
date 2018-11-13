@@ -482,6 +482,7 @@ namespace Cassandra.Mapping
                 // Invoke the converter function on getValueT (taking into account whether it's a static method):
                 //     converter(row.GetValue<T>(columnIndex));
                 convertedValue = Expression.Call(converter.Target == null ? null : Expression.Constant(converter.Target), GetMethod(converter), getValueT);
+                convertedValue = Expression.Convert(convertedValue, pocoDestType);
             }
             Expression defaultValue;
             // Cassandra will return null for empty collections, so make an effort to populate collection properties on the POCO with
